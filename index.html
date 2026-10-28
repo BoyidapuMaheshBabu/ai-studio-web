@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="A calm, personal workspace for thinking and working with local AI models.">
+  <title>Studio — AI workspace</title>
+  <link rel="icon" type="image/svg+xml" href="assets/studio-mark.svg">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Workspace navigation">
+      <a class="brand" href="./" aria-label="Studio home">
+        <img class="brand-mark" src="assets/studio-mark.svg" alt="">
+        <span class="brand-copy">
+          <span class="brand-name">Studio</span>
+          <span class="brand-subtitle">Your AI workspace</span>
+        </span>
+      </a>
+
+      <button class="new-chat" id="newChatButton" type="button">
+        <span class="new-chat-leading">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          New conversation
+        </span>
+        <span class="key-hint">Ctrl K</span>
+      </button>
+
+      <h2 class="side-section-title">Recent</h2>
+      <nav class="history-list" id="historyList" aria-label="Recent conversations">
+        <p class="history-empty">Your conversations will appear here.</p>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="sidebar-footer">
+        <button class="local-runtime" id="openRuntimeSettings" type="button">
+          <span class="runtime-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="6" width="12" height="12" rx="2"/>
+              <path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>
+            </svg>
+          </span>
+          <span class="runtime-copy">
+            <span class="runtime-title">Local model</span>
+            <span class="runtime-description">
+              <span class="status-dot" id="runtimeDot"></span>
+              <span id="runtimeLabel">Not connected</span>
+            </span>
+          </span>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="m9 18 6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <div class="sidebar-scrim" id="sidebarScrim" aria-hidden="true"></div>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="topbar-start">
+          <button class="mobile-menu" id="mobileMenuButton" type="button" aria-label="Open navigation" aria-expanded="false">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16"/>
+            </svg>
+          </button>
+          <span class="topbar-title" id="sessionTitle">New conversation</span>
+        </div>
+
+        <div class="topbar-end">
+          <button class="model-trigger" id="openModelSettings" type="button" aria-haspopup="dialog">
+            <span class="model-dot" id="modelDot"></span>
+            <span class="model-label" id="modelLabel">Connect local model</span>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m8 10 4 4 4-4"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <section class="chat-scroll" id="chatScroll" aria-label="Conversation">
+        <div class="welcome" id="welcomeState">
+          <div class="welcome-logo">
+            <img src="assets/studio-mark.svg" alt="">
+          </div>
+          <h1>What would you like to work on?</h1>
+          <p class="welcome-description">
+            Bring a question, a half-formed idea, or a problem you want to solve.
+            Start wherever you are. We can work through it from there.
+          </p>
+
+          <div class="starters" aria-label="Suggested starting points">
+            <button class="starter" type="button" data-prompt="Help me understand a technical concept with a clear explanation and a practical example.">
+              <span class="starter-label">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3a7 7 0 0 0-4 12.7c.7.5 1 1 1 1.8h6c0-.8.3-1.3 1-1.8A7 7 0 0 0 12 3Z"/>
+                  <path d="M9.5 21h5M10 18h4M10 8.5c.5-.8 1.2-1.2 2-1.2"/>
+                </svg>
+                Learn something
+              </span>
+              <span class="starter-description">Make a difficult idea easier to understand.</span>
+            </button>
+
+            <button class="starter" type="button" data-prompt="Help me review this coding task. Ask for the relevant code and guide me through a careful fix and tests.">
+              <span class="starter-label">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/>
+                </svg>
+                Work on code
+              </span>
+              <span class="starter-description">Think through logic, fixes, and tests.</span>
+            </button>
+
+            <button class="starter" type="button" data-prompt="Help me turn a project idea into small, practical phases with a clear first step.">
+              <span class="starter-label">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="4" y="5" width="16" height="15" rx="2"/>
+                  <path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/>
+                </svg>
+                Plan a project
+              </span>
+              <span class="starter-description">Turn an ambitious idea into next steps.</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="message-list" id="messageList" role="log" aria-live="polite" aria-relevant="additions" hidden></div>
+      </section>
+
+      <footer class="composer-area">
+        <div class="composer-wrap">
+          <form class="composer" id="promptForm">
+            <label for="promptInput" hidden>Message Studio</label>
+            <textarea id="promptInput" name="message" rows="1" maxlength="20000" placeholder="Message Studio…" autocomplete="off" required></textarea>
+            <div class="composer-controls">
+              <span class="composer-hint">Enter to send · Shift + Enter for a new line</span>
+              <button class="send-button" id="sendButton" type="submit" aria-label="Send message" disabled>
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+          <p class="composer-footnote">Local conversations stay in this browser. Model responses require a configured local API.</p>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <div class="dialog-backdrop" id="modelDialog" hidden>
+    <section class="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="modelDialogTitle" aria-describedby="modelDialogDescription">
+      <header class="dialog-header">
+        <div>
+          <h2 id="modelDialogTitle">Connect a local model</h2>
+          <p id="modelDialogDescription">Use an OpenAI-compatible API from a model runtime on this computer.</p>
+        </div>
+        <button class="dialog-close" id="closeModelSettings" type="button" aria-label="Close settings">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18"/>
+          </svg>
+        </button>
+      </header>
+
+      <div class="dialog-content">
+        <div class="field">
+          <label for="endpointInput">Chat completions endpoint</label>
+          <input id="endpointInput" type="url" inputmode="url" spellcheck="false" placeholder="http://localhost:1234/v1/chat/completions" autocomplete="url">
+          <span class="field-help">For LM Studio, start its local server first. Keep this endpoint on your own computer.</span>
+        </div>
+
+        <div class="field">
+          <label for="modelIdInput">Model ID</label>
+          <input id="modelIdInput" type="text" spellcheck="false" placeholder="Load a model, then test the connection" autocomplete="off">
+          <span class="field-help">Use the exact ID reported by your local runtime.</span>
+        </div>
+
+        <div class="field">
+          <label for="apiKeyInput">API key <span style="font-weight:400;color:#777f8b">(optional)</span></label>
+          <input id="apiKeyInput" type="password" spellcheck="false" placeholder="Leave blank if your runtime does not require one" autocomplete="off">
+        </div>
+
+        <p class="dialog-note">This setting is saved in this browser only. Browser access may require CORS to be enabled in your local model server. Do not enter a paid provider's secret key here.</p>
+
+        <div class="dialog-actions">
+          <button class="button-secondary" id="clearConnectionButton" type="button">Disconnect</button>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="button-secondary" id="cancelModelSettings" type="button">Cancel</button>
+            <button class="button-primary" id="saveConnectionButton" type="button">Save connection</button>
+          </div>
+        </div>
+
+        <p class="connection-message" id="connectionMessage" aria-live="polite"></p>
+        <button class="button-secondary" id="testConnectionButton" type="button" style="width:100%;margin-top:6px">Test connection</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite" hidden style="position:fixed;z-index:80;bottom:90px;left:50%;transform:translateX(-50%);max-width:calc(100vw - 32px);padding:10px 14px;border:1px solid #e0e4eb;border-radius:10px;background:#fff;color:#282d36;font-size:12px;box-shadow:0 10px 32px rgba(15,23,42,.12)"></div>
+</body>
+</html>
