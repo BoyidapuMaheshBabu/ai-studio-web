@@ -1,5 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect x="2" y="2" width="60" height="60" rx="18" fill="#2563EB"/>
+  <defs>
+    <linearGradient id="blueGlass" x1="10" y1="4" x2="52" y2="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8DBBFF"/>
+      <stop offset=".42" stop-color="#4B86FF"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="13" y1="6" x2="47" y2="43" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity=".58"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="18" fill="url(#blueGlass)"/>
+  <rect x="2.7" y="2.7" width="58.6" height="58.6" rx="17.3" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="1.4"/>
+  <path d="M3 20C11 7.5 22 3 36 3h9c8 0 14 5.5 16 13v10c-12-7-27-9-45-2Z" fill="url(#shine)"/>
   <path d="M32 12.5 36.7 27.3 51.5 32 36.7 36.7 32 51.5 27.3 36.7 12.5 32 27.3 27.3 32 12.5Z" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
   <circle cx="32" cy="32" r="4.2" fill="#FFFFFF"/>
 </svg>
