@@ -72,9 +72,12 @@
           </button>
           <span class="topbar-title" id="sessionTitle">New chat</span>
         </div>
-        <div class="topbar-end">
-          <span class="workspace-label">Studio</span>
-        </div>
+        <nav class="mode-switch" aria-label="Workspace mode">
+          <button class="mode-tab is-active" type="button" data-mode="chat" aria-pressed="true">Chat</button>
+          <button class="mode-tab" type="button" data-mode="work" aria-pressed="false">Work</button>
+          <button class="mode-tab" type="button" data-mode="code" aria-pressed="false">Code</button>
+        </nav>
+        <div class="topbar-end"><span class="workspace-label">Studio</span></div>
       </header>
 
       <section class="chat-scroll" id="chatScroll" aria-label="Conversation">
