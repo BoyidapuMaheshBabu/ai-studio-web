@@ -74,80 +74,94 @@
         </div>
 
         <div class="topbar-end">
-          <button class="model-trigger" id="openModelSettings" type="button" aria-haspopup="dialog">
-            <span class="model-dot" id="modelDot"></span>
-            <span class="model-label" id="modelLabel">Connect local model</span>
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="m8 10 4 4 4-4"/>
-            </svg>
-          </button>
+          <span class="workspace-label">Studio</span>
         </div>
       </header>
 
       <section class="chat-scroll" id="chatScroll" aria-label="Conversation">
         <div class="welcome" id="welcomeState">
-          <div class="welcome-logo">
-            <img src="assets/studio-mark.svg" alt="">
+          <div class="welcome-heading">
+            <div class="welcome-logo">
+              <img src="assets/studio-mark.svg" alt="">
+            </div>
+            <h1>What can I help you with?</h1>
           </div>
-          <h1>What would you like to work on?</h1>
-          <p class="welcome-description">
-            Bring a question, a half-formed idea, or a problem you want to solve.
-            Start wherever you are. We can work through it from there.
-          </p>
 
           <div class="starters" aria-label="Suggested starting points">
-            <button class="starter" type="button" data-prompt="Help me understand a technical concept with a clear explanation and a practical example.">
+            <button class="starter" type="button" data-prompt="Help me write something clear, useful, and well-structured.">
+              <span class="starter-label">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 19.5 19 5.5M7 5h12v12"/>
+                </svg>
+                Write
+              </span>
+            </button>
+            <button class="starter" type="button" data-prompt="Explain this concept in simple language, step by step, with a practical example.">
               <span class="starter-label">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M12 3a7 7 0 0 0-4 12.7c.7.5 1 1 1 1.8h6c0-.8.3-1.3 1-1.8A7 7 0 0 0 12 3Z"/>
-                  <path d="M9.5 21h5M10 18h4M10 8.5c.5-.8 1.2-1.2 2-1.2"/>
+                  <path d="M9.5 21h5M10 18h4"/>
                 </svg>
-                Learn something
+                Learn
               </span>
-              <span class="starter-description">Make a difficult idea easier to understand.</span>
             </button>
-
-            <button class="starter" type="button" data-prompt="Help me review this coding task. Ask for the relevant code and guide me through a careful fix and tests.">
+            <button class="starter" type="button" data-prompt="Help me work through a coding problem. Ask for any code or context you need, then suggest tests.">
               <span class="starter-label">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/>
                 </svg>
-                Work on code
+                Code
               </span>
-              <span class="starter-description">Think through logic, fixes, and tests.</span>
             </button>
-
-            <button class="starter" type="button" data-prompt="Help me turn a project idea into small, practical phases with a clear first step.">
+            <button class="starter" type="button" data-prompt="Help me turn a project idea into practical phases and identify the best first step.">
               <span class="starter-label">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <rect x="4" y="5" width="16" height="15" rx="2"/>
                   <path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"/>
                 </svg>
-                Plan a project
+                Plan
               </span>
-              <span class="starter-description">Turn an ambitious idea into next steps.</span>
             </button>
           </div>
         </div>
 
-        <div class="message-list" id="messageList" role="log" aria-live="polite" aria-relevant="additions" hidden></div>
-      </section>
-
-      <footer class="composer-area">
-        <div class="composer-wrap">
-          <form class="composer" id="promptForm">
-            <label for="promptInput" hidden>Message Studio</label>
-            <textarea id="promptInput" name="message" rows="1" maxlength="20000" placeholder="Message Studio…" autocomplete="off" required></textarea>
+omplete="off" required></textarea>
             <div class="composer-controls">
-              <span class="composer-hint">Enter to send · Shift + Enter for a new line</span>
-              <button class="send-button" id="sendButton" type="submit" aria-label="Send message" disabled>
-                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/>
-                </svg>
-              </button>
+              <div class="composer-tools">
+                <button class="plus-button" id="addContextButton" type="button" aria-label="More options" aria-expanded="false" aria-controls="contextMenu">
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                </button>
+                <div class="composer-menu" id="contextMenu" hidden>
+                  <button class="composer-menu-action" id="connectFromMenu" type="button">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <rect x="6" y="6" width="12" height="12" rx="2"/>
+                      <path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>
+                    </svg>
+                    Connect a local model
+                  </button>
+                  <div class="composer-menu-note">File attachments and additional tools are not connected yet.</div>
+                </div>
+              </div>
+              <span class="composer-hint">Shift + Enter for a new line</span>
+              <div class="composer-actions">
+                <button class="model-trigger" id="openModelSettings" type="button" aria-haspopup="dialog">
+                  <span class="model-dot" id="modelDot"></span>
+                  <span class="model-label" id="modelLabel">Connect local model</span>
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m8 10 4 4 4-4"/>
+                  </svg>
+                </button>
+                <button class="send-button" id="sendButton" type="submit" aria-label="Send message" disabled>
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           </form>
-          <p class="composer-footnote">Local conversations stay in this browser. Model responses require a configured local API.</p>
+          <p class="composer-footnote">Studio can make mistakes. Check important information.</p>
         </div>
       </footer>
     </main>
