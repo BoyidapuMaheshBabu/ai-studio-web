@@ -14,6 +14,12 @@
   const welcomeState = $("welcomeState");
   const messageList = $("messageList");
   const sessionTitle = $("sessionTitle");
+  const composerArea = $("composerArea");
+  const mainPanel = document.querySelector(".main-panel");
+  const startersContainer = document.querySelector(".starters");
+  const addContextButton = $("addContextButton");
+  const contextMenu = $("contextMenu");
+  const connectFromMenu = $("connectFromMenu");
   const promptForm = $("promptForm");
   const promptInput = $("promptInput");
   const sendButton = $("sendButton");
@@ -270,17 +276,28 @@
 
   function renderConversation() {
     const conversation = activeConversation();
+    const hasMessages = Boolean(conversation && conversation.messages.length > 0);
     messageList.replaceChildren();
 
-    if (!conversation || conversation.messages.length === 0) {
+    if (!hasMessages) {
       activeConversationId = null;
       welcomeState.hidden = false;
       messageList.hidden = true;
       sessionTitle.textContent = "New conversation";
+      // On the home screen, the composer sits below the greeting like the reference layout.
+      if (composerArea.parentElement !== welcomeState) {
+        welcomeState.insertBefore(composerArea, startersContainer);
+      }
+      composerArea.classList.add("is-home");
     } else {
       welcomeState.hidden = true;
       messageList.hidden = false;
       sessionTitle.textContent = conversation.title;
+      // During a conversation the same composer docks to the bottom of the chat.
+      if (composerArea.parentElement !== mainPanel) {
+        mainPanel.append(composerArea);
+      }
+      composerArea.classList.remove("is-home");
       conversation.messages.forEach((message) => messageList.append(createMessageNode(message)));
       requestAnimationFrame(() => { chatScroll.scrollTop = chatScroll.scrollHeight; });
     }
@@ -584,6 +601,22 @@
 
   $("openModelSettings").addEventListener("click", openModelSettings);
   $("openRuntimeSettings").addEventListener("click", openModelSettings);
+  addContextButton.addEventListener("click", () => {
+    const opening = contextMenu.hidden;
+    contextMenu.hidden = !opening;
+    addContextButton.setAttribute("aria-expanded", String(opening));
+  });
+  connectFromMenu.addEventListener("click", () => {
+    contextMenu.hidden = true;
+    addContextButton.setAttribute("aria-expanded", "false");
+    openModelSettings();
+  });
+  document.addEventListener("click", (event) => {
+    if (!contextMenu.hidden && !contextMenu.contains(event.target) && !addContextButton.contains(event.target)) {
+      contextMenu.hidden = true;
+      addContextButton.setAttribute("aria-expanded", "false");
+    }
+  });
   $("closeModelSettings").addEventListener("click", closeModelSettings);
   $("cancelModelSettings").addEventListener("click", closeModelSettings);
   testConnectionButton.addEventListener("click", testModelConnection);
@@ -604,6 +637,11 @@
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !modelDialog.hidden) closeModelSettings();
+    if (event.key === "Escape" && !contextMenu.hidden) {
+      contextMenu.hidden = true;
+      addContextButton.setAttribute("aria-expanded", "false");
+      addContextButton.focus();
+    }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
       event.preventDefault();
       startNewConversation();
