@@ -36,12 +36,29 @@
   const runtimeLabel = $("runtimeLabel");
   const runtimeDot = $("runtimeDot");
   const toast = $("toast");
+  const modeTabs = [...document.querySelectorAll(".mode-tab")];
 
   let conversations = readConversations();
   let activeConversationId = null;
   let modelConfig = readModelConfig();
   let isSending = false;
+  let currentMode = "chat";
   let toastTimer = null;
+
+  const modeSettings = {
+    chat: {
+      placeholder: "How can I help you today?",
+      instruction: "You are Studio, a helpful general-purpose assistant. Be clear, accurate, calm, and practical. Ask a concise clarifying question when necessary."
+    },
+    work: {
+      placeholder: "What would you like to get done?",
+      instruction: "You are Studio in Work mode. Help the user make progress on a real task. Organize the request, make reasonable assumptions explicit, provide actionable steps, and distinguish completed actions from suggestions. Do not claim to operate tools you do not have."
+    },
+    code: {
+      placeholder: "Ask about code or paste an error…",
+      instruction: "You are Studio in Code mode, a careful software engineering assistant. Explain the implementation clearly, consider edge cases, and include practical tests when useful. Do not claim code has been executed unless it actually has."
+    }
+  };
 
   const icons = {
     history: '<path d="M3.5 11.5a8.5 8.5 0 1 0 2.4-5.9L3 8"/><path d="M3 3.5V8h4.5"/><path d="M12 7v5l3 2"/>',
@@ -90,6 +107,7 @@
         .map((item) => ({
           id: item.id,
           title: typeof item.title === "string" ? item.title.slice(0, 100) : "New conversation",
+          mode: ["chat", "work", "code"].includes(item.mode) ? item.mode : "chat",
           updatedAt: Number(item.updatedAt) || Date.now(),
           messages: item.messages
             .filter((message) =>
@@ -150,6 +168,28 @@
     return compact.length > 44 ? compact.slice(0, 41).trimEnd() + "..." : (compact || "New conversation");
   }
 
+  function syncModeTabs() {
+    modeTabs.forEach((tab) => {
+      const active = tab.dataset.mode === currentMode;
+      tab.classList.toggle("is-active", active);
+      tab.setAttribute("aria-pressed", String(active));
+    });
+    promptInput.placeholder = (modeSettings[currentMode] || modeSettings.chat).placeholder;
+  }
+
+  function chooseMode(mode) {
+    if (!Object.prototype.hasOwnProperty.call(modeSettings, mode)) return;
+    currentMode = mode;
+    const conversation = activeConversation();
+    if (conversation) {
+      conversation.mode = mode;
+      conversation.updatedAt = Date.now();
+      saveConversationData();
+      renderHistory();
+    }
+    syncModeTabs();
+  }
+
   function activeConversation() {
     return conversations.find((item) => item.id === activeConversationId) || null;
   }
@@ -158,6 +198,7 @@
     const conversation = {
       id: newId(),
       title: titleFrom(firstPrompt),
+      mode: currentMode,
       updatedAt: Date.now(),
       messages: []
     };
@@ -292,6 +333,8 @@
     } else {
       welcomeState.hidden = true;
       messageList.hidden = false;
+      currentMode = ["chat", "work", "code"].includes(conversation.mode) ? conversation.mode : "chat";
+      syncModeTabs();
       sessionTitle.textContent = conversation.title;
       // During a conversation the same composer docks to the bottom of the chat.
       if (composerArea.parentElement !== mainPanel) {
@@ -450,7 +493,7 @@
     if (!modelConfig) {
       conversation.messages.push({
         role: "assistant",
-        content: "This interface is ready for a local model, but a connection has not been configured yet. Open “Connect local model” in the top bar, enter your local API endpoint and model ID, then try again."
+        content: "This interface is ready for a local model, but a connection has not been configured yet. Open “Connect local model” in the composer or the sidebar, enter your local API endpoint and model ID, then try again."
       });
       conversation.updatedAt = Date.now();
       saveConversationData();
@@ -491,10 +534,13 @@
     requestAnimationFrame(() => { chatScroll.scrollTop = chatScroll.scrollHeight; });
 
     try {
-      const history = conversation.messages.map((message) => ({
-        role: message.role,
-        content: message.content
-      }));
+      const history = [
+        { role: "system", content: (modeSettings[conversation.mode || currentMode] || modeSettings.chat).instruction },
+        ...conversation.messages.map((message) => ({
+          role: message.role,
+          content: message.content
+        }))
+      ];
       const response = await fetch(validated.url.toString(), {
         method: "POST",
         headers: endpointHeaders(modelConfig.apiKey),
@@ -561,6 +607,8 @@
       return;
     }
     activeConversationId = null;
+    currentMode = "chat";
+    syncModeTabs();
     promptInput.value = "";
     resizePrompt();
     updateSendButton();
@@ -593,6 +641,10 @@
       updateSendButton();
       promptInput.focus();
     });
+  });
+
+  modeTabs.forEach((tab) => {
+    tab.addEventListener("click", () => chooseMode(tab.dataset.mode));
   });
 
   newChatButton.addEventListener("click", startNewConversation);
@@ -653,6 +705,7 @@
   });
 
   renderHistory();
+  syncModeTabs();
   renderConversation();
   updateConnectionUI();
   resizePrompt();
