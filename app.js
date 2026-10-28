@@ -165,7 +165,7 @@
 
   function titleFrom(text) {
     const compact = text.replace(/\s+/g, " ").trim();
-    return compact.length > 44 ? compact.slice(0, 41).trimEnd() + "..." : (compact || "New conversation");
+    return compact.length > 44 ? compact.slice(0, 41).trimEnd() + "..." : (compact || "New chat");
   }
 
   function syncModeTabs() {
@@ -324,7 +324,7 @@
       activeConversationId = null;
       welcomeState.hidden = false;
       messageList.hidden = true;
-      sessionTitle.textContent = "New conversation";
+      sessionTitle.textContent = "New chat";
       // On the home screen, the composer sits below the greeting like the reference layout.
       if (composerArea.parentElement !== welcomeState) {
         welcomeState.insertBefore(composerArea, startersContainer);
