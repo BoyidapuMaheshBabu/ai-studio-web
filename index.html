@@ -26,12 +26,12 @@
           <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <path d="M12 5v14M5 12h14"/>
           </svg>
-          New conversation
+          New chat
         </span>
         <span class="key-hint">Ctrl K</span>
       </button>
 
-      <h2 class="side-section-title">Recent</h2>
+      <h2 class="side-section-title">Recent chats</h2>
       <nav class="history-list" id="historyList" aria-label="Recent conversations">
         <p class="history-empty">Your conversations will appear here.</p>
       </nav>
@@ -70,9 +70,8 @@
               <path d="M4 7h16M4 12h16M4 17h16"/>
             </svg>
           </button>
-          <span class="topbar-title" id="sessionTitle">New conversation</span>
+          <span class="topbar-title" id="sessionTitle">New chat</span>
         </div>
-
         <div class="topbar-end">
           <span class="workspace-label">Studio</span>
         </div>
@@ -125,7 +124,14 @@
           </div>
         </div>
 
-omplete="off" required></textarea>
+        <div class="message-list" id="messageList" role="log" aria-live="polite" aria-relevant="additions" hidden></div>
+      </section>
+
+      <footer class="composer-area" id="composerArea">
+        <div class="composer-wrap">
+          <form class="composer" id="promptForm">
+            <label for="promptInput" hidden>Message Studio</label>
+            <textarea id="promptInput" name="message" rows="1" maxlength="20000" placeholder="How can I help you today?" autocomplete="off" required></textarea>
             <div class="composer-controls">
               <div class="composer-tools">
                 <button class="plus-button" id="addContextButton" type="button" aria-label="More options" aria-expanded="false" aria-controls="contextMenu">
@@ -187,20 +193,16 @@ omplete="off" required></textarea>
           <input id="endpointInput" type="url" inputmode="url" spellcheck="false" placeholder="http://localhost:1234/v1/chat/completions" autocomplete="url">
           <span class="field-help">For LM Studio, start its local server first. Keep this endpoint on your own computer.</span>
         </div>
-
         <div class="field">
           <label for="modelIdInput">Model ID</label>
           <input id="modelIdInput" type="text" spellcheck="false" placeholder="Load a model, then test the connection" autocomplete="off">
           <span class="field-help">Use the exact ID reported by your local runtime.</span>
         </div>
-
         <div class="field">
           <label for="apiKeyInput">API key <span style="font-weight:400;color:#777f8b">(optional)</span></label>
           <input id="apiKeyInput" type="password" spellcheck="false" placeholder="Leave blank if your runtime does not require one" autocomplete="off">
         </div>
-
         <p class="dialog-note">This setting is saved in this browser only. Browser access may require CORS to be enabled in your local model server. Do not enter a paid provider's secret key here.</p>
-
         <div class="dialog-actions">
           <button class="button-secondary" id="clearConnectionButton" type="button">Disconnect</button>
           <div style="display:flex;gap:8px;align-items:center">
@@ -208,13 +210,12 @@ omplete="off" required></textarea>
             <button class="button-primary" id="saveConnectionButton" type="button">Save connection</button>
           </div>
         </div>
-
         <p class="connection-message" id="connectionMessage" aria-live="polite"></p>
         <button class="button-secondary" id="testConnectionButton" type="button" style="width:100%;margin-top:6px">Test connection</button>
       </div>
     </section>
   </div>
 
-  <div id="toast" role="status" aria-live="polite" hidden style="position:fixed;z-index:80;bottom:90px;left:50%;transform:translateX(-50%);max-width:calc(100vw - 32px);padding:10px 14px;border:1px solid #e0e4eb;border-radius:10px;background:#fff;color:#282d36;font-size:12px;box-shadow:0 10px 32px rgba(15,23,42,.12)"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>
